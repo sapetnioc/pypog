@@ -80,9 +80,10 @@ jobs:
       - name: Run tests and generate reports
         if: steps.branch.outputs.reports != 'true'
         run: |
-          set -x
+          set +e
           python -m coverage run --source=. -m pytest --junitxml=reports/junit.xml --html=reports/tests.html
           status=$?
+          set -e
           python -m coverage html -d reports/coverage
           python -m coverage xml -o reports/coverage.xml
           genbadge tests -i reports/junit.xml -o reports/tests.svg
