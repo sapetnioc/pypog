@@ -41,7 +41,7 @@ jobs:
 
       - name: Run tests and generate reports
         run: |
-          git merge --commit --no-edit ${{ steps.extract_branch.outputs.branch }}
+          git merge --commit --no-edit origin/${{ steps.extract_branch.outputs.branch }}
           sh tests.sh
           git add -a -f .
           git commit -m "Automatic tests reports generation"
