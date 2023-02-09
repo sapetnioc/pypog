@@ -32,8 +32,7 @@ jobs:
       - name: "Ensure reports branch exists"
         if: steps.branch.outputs.reports != 'true'
         run: |
-          git fetch
-          if [ ! `git rev-parse --verify "${{ steps.branch.outputs.branch }}_reports" 2>/dev/null` ]
+          if [ ! `git rev-parse --verify "origin/${{ steps.branch.outputs.branch }}_reports" 2>/dev/null` ]
           then
             git branch ${{ steps.branch.outputs.branch }}_reports
             git checkout ${{ steps.branch.outputs.branch }}_reports
