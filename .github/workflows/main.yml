@@ -38,10 +38,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ steps.extract_branch.outputs.branch }}_reports
+          fetch-depth: 0
 
       - name: Run tests and generate reports
         run: |
-          git fetch origin ${{ steps.extract_branch.outputs.branch }}:${{ steps.extract_branch.outputs.branch }}
           git merge --commit --no-edit origin/${{ steps.extract_branch.outputs.branch }}
           sh tests.sh
           git add -a -f .
