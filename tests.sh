@@ -1,5 +1,4 @@
 #!/bin/sh
-set -x
 if [ ! -e reports ]; then
     mkdir reports
 fi

@@ -1,0 +1,48 @@
+name: "Tests and reports"
+on: [push, workflow_dispatch]
+
+jobs:
+  update_readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Extract branch name
+        shell: bash
+        run: echo branch=`git rev-parse --abbrev-ref HEAD` >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: "Set branch in README.md"
+        run: |
+          sed -r 's:/([^/]*)_reports/:/'${{ steps.extract_branch.outputs.branch }}'_reports/:g' -i README.md
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -u
+          git commit -m "Automatic update of branch name in README.md links" || true
+          git push
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: 3.9
+
+      - name: Install Postgresql
+        run: |
+          sudo apt install -y postgresql
+      
+      - name: Install project
+        run: |
+          pip install -U pip
+          pip install .
+      
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.extract_branch.outputs.branch }}_reports
+
+      - name: Run tests and generate reports
+        run: |
+          git merge --commit ${{ steps.extract_branch.outputs.branch }} ${{ steps.extract_branch.outputs.branch }}_reports
+          sh tests.sh
+          git add -a -f .
+          git commit -m "Automatic tests reports generation"
+          git push
