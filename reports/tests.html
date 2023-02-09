@@ -253,7 +253,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
 }
 </script>
     <h1>tests.html</h1>
-    <p>Report generated on 09-Feb-2023 at 20:01:36 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <p>Report generated on 09-Feb-2023 at 20:08:25 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
     <h2>Environment</h2>
     <table id="environment">
       <tr>
@@ -275,8 +275,8 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <td>Python</td>
         <td>3.9.16</td></tr></table>
     <h2>Summary</h2>
-    <p>2 tests ran in 2.94 seconds. </p>
-    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">0 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">2 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <p>2 tests ran in 3.55 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">2 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
     <h2>Results</h2>
     <table id="results-table">
       <thead id="results-table-head">
@@ -287,24 +287,24 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
           <th class="sortable links" col="links">Links</th></tr>
         <tr hidden="true" id="not-found-message">
           <th colspan="4">No results found. Try to check the filters</th></tr></thead>
-      <tbody class="failed results-table-row">
+      <tbody class="passed results-table-row">
         <tr>
-          <td class="col-result">Failed</td>
+          <td class="col-result">Passed</td>
           <td class="col-name">tests/pypog_test.py::test_pypog</td>
-          <td class="col-duration">1.68</td>
+          <td class="col-duration">2.32</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
-            <div class="log">postgresql = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=16823 user=postgres database=tests) at 0x7f3153a35d00&gt;<br/><br/>    def test_pypog(postgresql):<br/>        @dataclass<br/>        class Test:<br/>            id: int<br/>            num: int<br/>            data: str<br/>    <br/>        cpg = ClassPostgres(postgresql)<br/>        # cpg.classes[&quot;test&quot;] = Test<br/>    <br/>&gt;       with cpg.class_cursor(&quot;test&quot;) as cur:<br/><br/>tests/pypog_test.py:34: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;pypog.ClassPostgres object at 0x7f3154f02d60&gt;, class_name = &#x27;test&#x27;<br/>args = (), kwargs = {}, cls = None<br/><br/>    def class_cursor(self, class_name: str, *args, **kwargs) -&gt; Any:<br/>        cls = self.classes.get(class_name)<br/>        if not cls:<br/>&gt;           raise ValueError(f&quot;No such class: {class_name}&quot;)<br/><span class="error">E           ValueError: No such class: test</span><br/><br/>pypog/__init__.py:83: ValueError<br/></div></td></tr></tbody>
-      <tbody class="failed results-table-row">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
         <tr>
-          <td class="col-result">Failed</td>
+          <td class="col-result">Passed</td>
           <td class="col-name">tests/run_postgres_test.py::test_run_postgres</td>
-          <td class="col-duration">1.12</td>
+          <td class="col-duration">1.13</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
-            <div class="log">def test_run_postgres():<br/>        with RunPostgres(&quot;test&quot;) as pg:<br/>            with pg.connect() as db:<br/>                db.execute(<br/>                    &quot;CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);&quot;<br/>                )<br/>                db.execute(&quot;INSERT INTO test (num, data) VALUES (%s, %s);&quot;, [42, &quot;42&quot;])<br/>    <br/>            with pg.connect() as db:<br/>                cpg = ClassPostgres(db)<br/>                # cpg.classes[&quot;test&quot;] = Test<br/>    <br/>&gt;               with cpg.class_cursor(&quot;test&quot;) as cur:<br/><br/>tests/run_postgres_test.py:27: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;pypog.ClassPostgres object at 0x7f3153a47b80&gt;, class_name = &#x27;test&#x27;<br/>args = (), kwargs = {}, cls = None<br/><br/>    def class_cursor(self, class_name: str, *args, **kwargs) -&gt; Any:<br/>        cls = self.classes.get(class_name)<br/>        if not cls:<br/>&gt;           raise ValueError(f&quot;No such class: {class_name}&quot;)<br/><span class="error">E           ValueError: No such class: test</span><br/><br/>pypog/__init__.py:83: ValueError<br/> ------------------------------Captured stdout call------------------------------ <br/>The files belonging to this database system will be owned by user &quot;runner&quot;.
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>The files belonging to this database system will be owned by user &quot;runner&quot;.
 This user must also own the server process.
 
 The database cluster will be initialized with locale &quot;C.UTF-8&quot;.
@@ -313,7 +313,7 @@ The default text search configuration will be set to &quot;english&quot;.
 
 Data page checksums are disabled.
 
-fixing permissions on existing directory /tmp/tmpk_aekdat ... ok
+fixing permissions on existing directory /tmp/tmp2mzy4pt4 ... ok
 creating subdirectories ... ok
 selecting dynamic shared memory implementation ... posix
 selecting default max_connections ... 100
@@ -327,10 +327,11 @@ syncing data to disk ... ok
 
 Success. You can now start the database server using:
 
-    /usr/lib/postgresql/14/bin/pg_ctl -D /tmp/tmpk_aekdat -l logfile start
+    /usr/lib/postgresql/14/bin/pg_ctl -D /tmp/tmp2mzy4pt4 -l logfile start
 
 waiting for server to start.... done
 server started
+!!! Test(id=1, num=42, data=&#x27;42&#x27;)
 waiting for server to shut down.... done
 server stopped
 <br/> ------------------------------Captured stderr call------------------------------ <br/>initdb: warning: enabling &quot;trust&quot; authentication for local connections
