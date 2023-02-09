@@ -2,7 +2,7 @@ name: "CI"
 on: [push, workflow_dispatch]
 
 jobs:
-  Tests and reports:
+  tests_and_reports:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
