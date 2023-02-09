@@ -253,23 +253,29 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
 }
 </script>
     <h1>tests.html</h1>
-    <p>Report generated on 09-Feb-2023 at 09:01:53 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <p>Report generated on 09-Feb-2023 at 16:44:44 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
     <h2>Environment</h2>
     <table id="environment">
       <tr>
+        <td>CI</td>
+        <td>true</td></tr>
+      <tr>
+        <td>JAVA_HOME</td>
+        <td>/usr/lib/jvm/temurin-11-jdk-amd64</td></tr>
+      <tr>
         <td>Packages</td>
-        <td>{"pluggy": "0.13.0", "pytest": "7.2.1"}</td></tr>
+        <td>{"pluggy": "1.0.0", "pytest": "7.2.1"}</td></tr>
       <tr>
         <td>Platform</td>
-        <td>Linux-5.14.0-1057-oem-x86_64-with-glibc2.29</td></tr>
+        <td>Linux-5.15.0-1031-azure-x86_64-with-glibc2.35</td></tr>
       <tr>
         <td>Plugins</td>
-        <td>{"anyio": "3.3.4", "html": "3.2.0", "metadata": "2.0.4", "postgresql": "4.1.1", "typeguard": "2.13.3"}</td></tr>
+        <td>{"html": "3.2.0", "metadata": "2.0.4", "postgresql": "4.1.1"}</td></tr>
       <tr>
         <td>Python</td>
-        <td>3.8.10</td></tr></table>
+        <td>3.9.16</td></tr></table>
     <h2>Summary</h2>
-    <p>2 tests ran in 1.70 seconds. </p>
+    <p>2 tests ran in 4.61 seconds. </p>
     <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">1 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
     <h2>Results</h2>
     <table id="results-table">
@@ -285,25 +291,25 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <tr>
           <td class="col-result">Failed</td>
           <td class="col-name">tests/run_postgres_test.py::test_run_postgres</td>
-          <td class="col-duration">0.93</td>
+          <td class="col-duration">1.29</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
-            <div class="log">def test_run_postgres():<br/>        with RunPostgres(&quot;test&quot;) as pg:<br/>            with pg.connect() as db:<br/>                db.execute(<br/>                    &quot;CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);&quot;<br/>                )<br/>                db.execute(&quot;INSERT INTO test (num, data) VALUES (%s, %s);&quot;, [42, &quot;42&quot;])<br/>    <br/>            with pg.connect() as db:<br/>                cpg = ClassPostgres(db)<br/>                # cpg.classes[&quot;test&quot;] = Test<br/>    <br/>&gt;               with cpg.class_cursor(&quot;test&quot;) as cur:<br/><br/>tests/run_postgres_test.py:27: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;pypog.ClassPostgres object at 0x7f445f42d6d0&gt;, class_name = &#x27;test&#x27;, args = (), kwargs = {}, cls = None<br/><br/>    def class_cursor(self, class_name: str, *args, **kwargs) -&gt; Any:<br/>        cls = self.classes.get(class_name)<br/>        if not cls:<br/>&gt;           raise ValueError(f&quot;No such class: {class_name}&quot;)<br/><span class="error">E           ValueError: No such class: test</span><br/><br/>pypog/__init__.py:83: ValueError<br/> ------------------------------Captured stdout call------------------------------ <br/>The files belonging to this database system will be owned by user &quot;yann&quot;.
+            <div class="log">def test_run_postgres():<br/>        with RunPostgres(&quot;test&quot;) as pg:<br/>            with pg.connect() as db:<br/>                db.execute(<br/>                    &quot;CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);&quot;<br/>                )<br/>                db.execute(&quot;INSERT INTO test (num, data) VALUES (%s, %s);&quot;, [42, &quot;42&quot;])<br/>    <br/>            with pg.connect() as db:<br/>                cpg = ClassPostgres(db)<br/>                # cpg.classes[&quot;test&quot;] = Test<br/>    <br/>&gt;               with cpg.class_cursor(&quot;test&quot;) as cur:<br/><br/>tests/run_postgres_test.py:27: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;pypog.ClassPostgres object at 0x7f3d214c2e80&gt;, class_name = &#x27;test&#x27;<br/>args = (), kwargs = {}, cls = None<br/><br/>    def class_cursor(self, class_name: str, *args, **kwargs) -&gt; Any:<br/>        cls = self.classes.get(class_name)<br/>        if not cls:<br/>&gt;           raise ValueError(f&quot;No such class: {class_name}&quot;)<br/><span class="error">E           ValueError: No such class: test</span><br/><br/>pypog/__init__.py:83: ValueError<br/> ------------------------------Captured stdout call------------------------------ <br/>The files belonging to this database system will be owned by user &quot;runner&quot;.
 This user must also own the server process.
 
-The database cluster will be initialized with locale &quot;fr_FR.UTF-8&quot;.
+The database cluster will be initialized with locale &quot;C.UTF-8&quot;.
 The default database encoding has accordingly been set to &quot;UTF8&quot;.
-The default text search configuration will be set to &quot;french&quot;.
+The default text search configuration will be set to &quot;english&quot;.
 
 Data page checksums are disabled.
 
-fixing permissions on existing directory /tmp/tmp3r4phc1k ... ok
+fixing permissions on existing directory /tmp/tmp7eg9qf8r ... ok
 creating subdirectories ... ok
 selecting dynamic shared memory implementation ... posix
 selecting default max_connections ... 100
 selecting default shared_buffers ... 128MB
-selecting default time zone ... Europe/Paris
+selecting default time zone ... Etc/UTC
 creating configuration files ... ok
 running bootstrap script ... ok
 performing post-bootstrap initialization ... ok
@@ -312,7 +318,7 @@ syncing data to disk ... ok
 
 Success. You can now start the database server using:
 
-    /usr/lib/postgresql/12/bin/pg_ctl -D /tmp/tmp3r4phc1k -l logfile start
+    /usr/lib/postgresql/14/bin/pg_ctl -D /tmp/tmp7eg9qf8r -l logfile start
 
 waiting for server to start.... done
 server started
@@ -326,7 +332,7 @@ You can change this by editing pg_hba.conf or using the option -A, or
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/pypog_test.py::test_pypog</td>
-          <td class="col-duration">0.66</td>
+          <td class="col-duration">3.16</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
