@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Postgresql
         run: |
-          apt install postgresql-server
+          sudo apt install -y postgresql-server
       
       - name: Install project
         run: |
