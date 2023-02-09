@@ -36,7 +36,7 @@ jobs:
           then
             git branch ${{ steps.branch.outputs.branch }}_reports
             git checkout ${{ steps.branch.outputs.branch }}_reports
-            git push --set-upstream origin "${{ steps.branch.outputs.branch }}"
+            git push --set-upstream origin "${{ steps.branch.outputs.branch }}_reports"
           fi
 
       - name: Setup Python
