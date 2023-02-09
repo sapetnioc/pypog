@@ -12,8 +12,9 @@ jobs:
       - name: Extract branch name
         shell: bash
         run: |
-          echo branch=`git rev-parse --abbrev-ref HEAD` >> $GITHUB_OUTPUT
-          if ! echo "$branch"| grep -Eq '.*_reports$'; then
+          branch=`git rev-parse --abbrev-ref HEAD`
+          echo branch="$branch" >> $GITHUB_OUTPUT
+          if echo "$branch"| grep -Eq '.*_reports$'; then
               echo "reports=true" >> $GITHUB_OUTPUT
           fi
         id: branch
