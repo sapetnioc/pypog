@@ -33,7 +33,7 @@ jobs:
       - name: Install testing dependencies with pip
         run: |
           pip install -U pip
-          pip install pytest pytest-html coverage genbadge[all]
+          pip install pytest pytest-html coverage genbadge[all] pytest-postgresql
 
       - name: Install project
         run: |
