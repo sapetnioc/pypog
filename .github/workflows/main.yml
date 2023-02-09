@@ -71,7 +71,7 @@ jobs:
       - name: Merge branch in reports branch
         if: steps.branch.outputs.reports != 'true'
         run: |
-          git pull
+          git pull --commit --no-edit
           git merge --commit --no-edit origin/${{ steps.branch.outputs.branch }}
           if [ ! -e reports ]; then
               mkdir reports
