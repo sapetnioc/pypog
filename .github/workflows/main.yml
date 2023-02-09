@@ -14,7 +14,7 @@ jobs:
 
       - name: "Set branch in README.md"
         run: |
-          sed -r 's:/([^/]+)_reports/:/'${{ steps.extract_branch.outputs.branch }}'_reports/:g' -i README.md
+          sed -r 's:/([^/]*)_reports/:/'${{ steps.extract_branch.outputs.branch }}'_reports/:g' -i README.md
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -u
@@ -28,6 +28,7 @@ jobs:
 
       - name: Install Postgresql
         run: |
+          sudo apt update
           sudo apt install -y postgresql-server
       
       - name: Install project
