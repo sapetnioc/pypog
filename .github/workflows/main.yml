@@ -9,7 +9,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo echo branch=`git rev-parse --abbrev-ref HEAD` >> GITHUB_OUTPUT
         id: extract_branch
 
       - name: "Set branch in README.md"
