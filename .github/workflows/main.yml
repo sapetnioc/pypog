@@ -9,7 +9,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo branch=`git rev-parse --abbrev-ref HEAD` >> GITHUB_OUTPUT
+        run: echo branch=`git rev-parse --abbrev-ref HEAD` >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: "Set branch in README.md"
@@ -18,7 +18,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -u
-          git commit -m "Automatic update of branch name in README.md links"
+          git commit -m "Automatic update of branch name in README.md links" || true
           git push
       
       - name: Setup Python
