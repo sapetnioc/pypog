@@ -6,49 +6,90 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Extract branch name
         shell: bash
-        run: echo branch=`git rev-parse --abbrev-ref HEAD` >> $GITHUB_OUTPUT
-        id: extract_branch
-
-      - name: "Set branch in README.md"
         run: |
-          sed -r 's:/([^/]*)_reports/:/'${{ steps.extract_branch.outputs.branch }}'_reports/:g' -i README.md
+          branch=`git rev-parse --abbrev-ref HEAD`
+          echo branch="$branch" >> $GITHUB_OUTPUT
+          if echo "$branch"| grep -Eq '.*_reports$'; then
+              echo "reports=true" >> $GITHUB_OUTPUT
+          fi
+        id: branch
+
+      - name: "Update branch name in README.md"
+        if: steps.branch.outputs.reports != 'true'
+        run: |
+          sed -r 's:/([^/]*)_reports/:/${{ steps.branch.outputs.branch }}_reports/:g' -i README.md
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -u
           git commit -m "Automatic update of branch name in README.md links" || true
           git push
-      
+
+      - name: "Ensure reports branch exists"
+        if: steps.branch.outputs.reports != 'true'
+        run: |
+          if [ ! `git rev-parse --verify "origin/${{ steps.branch.outputs.branch }}_reports" 2>/dev/null` ]
+          then
+            git branch ${{ steps.branch.outputs.branch }}_reports
+            git checkout ${{ steps.branch.outputs.branch }}_reports
+            git push --set-upstream origin "${{ steps.branch.outputs.branch }}_reports"
+          fi
+
       - name: Setup Python
+        if: steps.branch.outputs.reports != 'true'
         uses: actions/setup-python@v4.5.0
         with:
           python-version: 3.9
 
       - name: Install Postgresql
+        if: steps.branch.outputs.reports != 'true'
         run: |
           sudo apt install -y postgresql
       
       - name: Install testing dependencies with pip
+        if: steps.branch.outputs.reports != 'true'
         run: |
           pip install -U pip
           pip install pytest pytest-html coverage genbadge[all] pytest-postgresql
 
       - name: Install project
+        if: steps.branch.outputs.reports != 'true'
         run: |
           pip install -U pip
           pip install .
       
       - uses: actions/checkout@v3
+        if: steps.branch.outputs.reports != 'true'
         with:
-          ref: ${{ steps.extract_branch.outputs.branch }}_reports
+          ref: ${{ steps.branch.outputs.branch }}_reports
           fetch-depth: 0
 
-      - name: Run tests and generate reports
+      - name: Merge branch in reports branch
+        if: steps.branch.outputs.reports != 'true'
         run: |
-          git merge --commit --no-edit origin/${{ steps.extract_branch.outputs.branch }}
-          sh tests.sh
+          git pull --commit --no-edit
+          git merge --commit --no-edit origin/${{ steps.branch.outputs.branch }}
+          if [ ! -e reports ]; then
+              mkdir reports
+          fi
+
+      - name: Run tests and generate reports
+        if: steps.branch.outputs.reports != 'true'
+        run: |
+          set +e
+          python -m coverage run --source=. -m pytest --junitxml=reports/junit.xml --html=reports/tests.html
+          status=$?
+          set -e
+          python -m coverage html -d reports/coverage
+          python -m coverage xml -o reports/coverage.xml
+          genbadge tests -i reports/junit.xml -o reports/tests.svg
+          genbadge coverage -i reports/coverage.xml -o reports/coverage.svg
+          rm reports/coverage.xml reports/junit.xml .coverage
           git add -A -f .
           git commit -m "Automatic tests reports generation"
           git push
+          exit $status
