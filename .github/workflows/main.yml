@@ -49,6 +49,6 @@ jobs:
         run: |
           git merge --commit --no-edit origin/${{ steps.extract_branch.outputs.branch }}
           sh tests.sh
-          git add -a -f .
+          git add -A -f .
           git commit -m "Automatic tests reports generation"
           git push
