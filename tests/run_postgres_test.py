@@ -22,7 +22,7 @@ def test_run_postgres():
 
         with pg.connect() as db:
             cpg = ClassPostgres(db)
-            cpg.classes["test"] = Test
+            # cpg.classes["test"] = Test
 
             with cpg.class_cursor("test") as cur:
                 cur.execute("SELECT * FROM test")
