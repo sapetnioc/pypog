@@ -29,7 +29,7 @@ def test_pypog(postgresql):
         data: str
 
     cpg = ClassPostgres(postgresql)
-    cpg.classes["test"] = Test
+    # cpg.classes["test"] = Test
 
     with cpg.class_cursor("test") as cur:
         cur.execute("SELECT * FROM test")
