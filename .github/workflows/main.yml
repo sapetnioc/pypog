@@ -30,6 +30,11 @@ jobs:
         run: |
           sudo apt install -y postgresql
       
+      - name: Install testing dependencies with pip
+        run: |
+          pip install -U pip
+          pip install genbadge
+
       - name: Install project
         run: |
           pip install -U pip
