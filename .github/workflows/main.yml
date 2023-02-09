@@ -33,7 +33,7 @@ jobs:
       - name: Install testing dependencies with pip
         run: |
           pip install -U pip
-          pip install genbadge
+          pip install pytest coverage genbadge
 
       - name: Install project
         run: |
