@@ -2,94 +2,95 @@ name: "CI"
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  tests_and_reports:
+
+  dump_contexts_to_log:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
 
-      - name: Extract branch name
-        shell: bash
-        run: |
-          branch=`git rev-parse --abbrev-ref HEAD`
-          echo branch="$branch" >> $GITHUB_OUTPUT
-          if echo "$branch"| grep -Eq '.*_reports$'; then
-              echo "reports=true" >> $GITHUB_OUTPUT
-          fi
-        id: branch
 
-      - name: "Update branch name in README.md"
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          sed -r 's:/([^/]*)_reports/:/${{ steps.branch.outputs.branch }}_reports/:g' -i README.md
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add -u
-          git commit -m "Automatic update of branch name in README.md links" || true
-          git push
+  # tests_and_reports:
+  #   runs-on: ubuntu-latest
+  #   steps:
 
-      - name: "Ensure reports branch exists"
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          if [ ! `git rev-parse --verify "origin/${{ steps.branch.outputs.branch }}_reports" 2>/dev/null` ]
-          then
-            git branch ${{ steps.branch.outputs.branch }}_reports
-            git checkout ${{ steps.branch.outputs.branch }}_reports
-            git push --set-upstream origin "${{ steps.branch.outputs.branch }}_reports"
-          fi
+  #     - name: "Update branch name in README.md"
+  #       run: |
+  #         sed -r 's:/([^/]*)_reports/:/${{ steps.branch.outputs.branch }}_reports/:g' -i README.md
+  #         git config user.name github-actions
+  #         git config user.email github-actions@github.com
+  #         git add -u
+  #         git commit -m "Automatic update of branch name in README.md links" || true
+  #         git push
 
-      - name: Setup Python
-        if: steps.branch.outputs.reports != 'true'
-        uses: actions/setup-python@v4.5.0
-        with:
-          python-version: 3.9
+  #     # - name: "Ensure reports branch exists"
+  #     #   if: steps.branch.outputs.reports != 'true'
+  #     #   run: |
+  #     #     if [ ! `git rev-parse --verify "origin/${{ steps.branch.outputs.branch }}_reports" 2>/dev/null` ]
+  #     #     then
+  #     #       git branch ${{ steps.branch.outputs.branch }}_reports
+  #     #       git checkout ${{ steps.branch.outputs.branch }}_reports
+  #     #       git push --set-upstream origin "${{ steps.branch.outputs.branch }}_reports"
+  #     #     fi
 
-      - name: Install Postgresql
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          sudo apt install -y postgresql
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v4.5.0
+  #       with:
+  #         python-version: 3.9
+
+  #     - name: Install Postgresql
+  #       run: |
+  #         sudo apt install -y postgresql
       
-      - name: Install testing dependencies with pip
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          pip install -U pip
-          pip install pytest pytest-html coverage genbadge[all] pytest-postgresql
+  #     - name: Install testing dependencies with pip
+  #       run: |
+  #         # General dependencies
+  #         pip install -U pip
+  #         pip install pytest pytest-html coverage genbadge[all]
+  #         # Project specific dependencies
+  #         pytest-postgresql
 
-      - name: Install project
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          pip install -U pip
-          pip install .
+  #     - name: Install project
+  #       run: |
+  #         pip install -U pip
+  #         pip install .
+
+  #     - name: Get public_reports repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         repository: sapetnioc/public_reports
+  #         path: reports
       
-      - uses: actions/checkout@v3
-        if: steps.branch.outputs.reports != 'true'
-        with:
-          ref: ${{ steps.branch.outputs.branch }}_reports
-          fetch-depth: 0
-
-      - name: Merge branch in reports branch
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          git pull --commit --no-edit
-          git merge --commit --no-edit origin/${{ steps.branch.outputs.branch }}
-          if [ ! -e reports ]; then
-              mkdir reports
-          fi
-
-      - name: Run tests and generate reports
-        if: steps.branch.outputs.reports != 'true'
-        run: |
-          set +e
-          python -m coverage run --source=. -m pytest --junitxml=reports/junit.xml --html=reports/tests.html
-          status=$?
-          set -e
-          python -m coverage html -d reports/coverage
-          python -m coverage xml -o reports/coverage.xml
-          genbadge tests -i reports/junit.xml -o reports/tests.svg
-          genbadge coverage -i reports/coverage.xml -o reports/coverage.svg
-          rm reports/coverage.xml reports/junit.xml .coverage
-          git add -A -f .
-          git commit -m "Automatic tests reports generation"
-          git push
-          exit $status
+  #     - name: Run tests and generate reports
+  #       if: steps.branch.outputs.reports != 'true'
+  #       run: |
+  #         project=`echo ${{ github.repository }} | cut -d'/' -f2`
+  #         project=`echo ${{ github.repository }} | cut -d'/' -f2`
+  #         reports_dir='reports/$project_${{ steps.branch.outputs.branch }}'
+  #         if [ -e "$reports_dir" ]; then
+  #           mkdir -p "$reports_dir"
+  #         fi
+  #         set +e
+  #         python -m coverage run --source=. -m pytest --junitxml="$reports_dir/junit.xml" --html="$reports_dir/tests.html"
+  #         status=$?
+  #         set -e
+  #         python -m coverage html -d "$reports_dir/coverage"
+  #         python -m coverage xml -o "$reports_dir/coverage.xml"
+  #         genbadge tests -i "$reports_dir/junit.xml" -o "$reports_dir/tests.svg"
+  #         genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
+  #         rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
+  #         git -C "$reports_dir" add -A -f "$reports_dir"
+  #         git commit -m "CI reports for ${{ ? }} branch ${{ steps.branch.outputs.branch }}"
+  #         git push
+  #         exit $status
