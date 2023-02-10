@@ -27,7 +27,7 @@ jobs:
 
       - name: "Update branch name in README.md"
         run: |
-          sed -r 's:/([^/]*)_reports/:/${{ github.ref_name }}_reports/:g' -i README.md
+          sed -r 's:/public_reports/([^/]*),([^,/]+)/:/public_reports/\1,${{ github.ref_name }}/:g' -i README.md
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -u
@@ -81,6 +81,6 @@ jobs:
           genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
           rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
           git -C "$reports_dir" add -A -f "$reports_dir"
-          git commit -m "CI reports for ${{ ? }} branch ${{ steps.branch.outputs.branch }}"
+          git commit -m "CI reports for $project ($branch)"
           git push
           exit $status
