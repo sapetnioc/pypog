@@ -68,6 +68,7 @@ jobs:
       - name: Run tests and generate reports
         if: steps.branch.outputs.reports != 'true'
         run: |
+          set -x
           project=`echo ${{ github.repository }} | cut -d'/' -f2`
           branch="${{ github.ref_name }}"
           reports_dir="reports/$project_$branch"
@@ -84,6 +85,6 @@ jobs:
           genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
           rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
           git -C "$reports_dir" add -A -f "$reports_dir"
-          git commit -m "CI reports for $project ($branch)"
-          git push
+          git -C "$reports_dir" commit -m "CI reports for $project ($branch)"
+          git -C "$reports_dir" push
           exit $status
