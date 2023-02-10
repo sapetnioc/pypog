@@ -84,6 +84,8 @@ jobs:
           genbadge tests -i "$reports_dir/junit.xml" -o "$reports_dir/tests.svg"
           genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
           rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git -C "$reports_dir" add -A -f .
           git -C "$reports_dir" commit -m "CI reports for $project ($branch)"
           git -C "$reports_dir" push
