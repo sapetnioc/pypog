@@ -88,5 +88,6 @@ jobs:
           git config --global user.email github-actions@github.com
           git -C "$reports_dir" add -A -f .
           git -C "$reports_dir" commit -m "CI reports for $project ($branch)"
+          git -C "$reports_dir" config --unset-all http.https://github.com/.extraheader
           git -C "$reports_dir" push
           exit $status
