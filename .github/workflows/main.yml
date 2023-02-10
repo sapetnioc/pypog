@@ -21,76 +21,66 @@ jobs:
         run: echo '${{ toJSON(matrix) }}'
 
 
-  # tests_and_reports:
-  #   runs-on: ubuntu-latest
-  #   steps:
+  tests_and_reports:
+    runs-on: ubuntu-latest
+    steps:
 
-  #     - name: "Update branch name in README.md"
-  #       run: |
-  #         sed -r 's:/([^/]*)_reports/:/${{ steps.branch.outputs.branch }}_reports/:g' -i README.md
-  #         git config user.name github-actions
-  #         git config user.email github-actions@github.com
-  #         git add -u
-  #         git commit -m "Automatic update of branch name in README.md links" || true
-  #         git push
+      - name: "Update branch name in README.md"
+        run: |
+          sed -r 's:/([^/]*)_reports/:/${{ github.ref_name }}_reports/:g' -i README.md
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -u
+          git commit -m "Automatic update of branch name in README.md links" || true
+          git push
 
-  #     # - name: "Ensure reports branch exists"
-  #     #   if: steps.branch.outputs.reports != 'true'
-  #     #   run: |
-  #     #     if [ ! `git rev-parse --verify "origin/${{ steps.branch.outputs.branch }}_reports" 2>/dev/null` ]
-  #     #     then
-  #     #       git branch ${{ steps.branch.outputs.branch }}_reports
-  #     #       git checkout ${{ steps.branch.outputs.branch }}_reports
-  #     #       git push --set-upstream origin "${{ steps.branch.outputs.branch }}_reports"
-  #     #     fi
+      - name: Setup Python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: 3.9
 
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v4.5.0
-  #       with:
-  #         python-version: 3.9
-
-  #     - name: Install Postgresql
-  #       run: |
-  #         sudo apt install -y postgresql
+      - name: Install Postgresql
+        run: |
+          sudo apt install -y postgresql
       
-  #     - name: Install testing dependencies with pip
-  #       run: |
-  #         # General dependencies
-  #         pip install -U pip
-  #         pip install pytest pytest-html coverage genbadge[all]
-  #         # Project specific dependencies
-  #         pytest-postgresql
+      - name: Install testing dependencies with pip
+        run: |
+          # General dependencies
+          pip install -U pip
+          pip install pytest pytest-html coverage genbadge[all]
+          # Project specific dependencies
+          pytest-postgresql
 
-  #     - name: Install project
-  #       run: |
-  #         pip install -U pip
-  #         pip install .
+      - name: Install project
+        run: |
+          pip install -U pip
+          pip install .
 
-  #     - name: Get public_reports repository
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: sapetnioc/public_reports
-  #         path: reports
-      
-  #     - name: Run tests and generate reports
-  #       if: steps.branch.outputs.reports != 'true'
-  #       run: |
-  #         project=`echo ${{ github.repository }} | cut -d'/' -f2`
-  #         project=`echo ${{ github.repository }} | cut -d'/' -f2`
-  #         reports_dir='reports/$project_${{ steps.branch.outputs.branch }}'
-  #         if [ -e "$reports_dir" ]; then
-  #           mkdir -p "$reports_dir"
-  #         fi
-  #         set +e
-  #         python -m coverage run --source=. -m pytest --junitxml="$reports_dir/junit.xml" --html="$reports_dir/tests.html"
-  #         status=$?
-  #         set -e
-  #         python -m coverage html -d "$reports_dir/coverage"
-  #         python -m coverage xml -o "$reports_dir/coverage.xml"
-  #         genbadge tests -i "$reports_dir/junit.xml" -o "$reports_dir/tests.svg"
-  #         genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
-  #         rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
-  #         git -C "$reports_dir" add -A -f "$reports_dir"
-  #         git commit -m "CI reports for ${{ ? }} branch ${{ steps.branch.outputs.branch }}"
-  #         git push
-  #         exit $status
+      - name: Get public_reports repository
+        uses: actions/checkout@v3
+        with:
+          repository: sapetnioc/public_reports
+          path: reports
+
+      - name: Run tests and generate reports
+        if: steps.branch.outputs.reports != 'true'
+        run: |
+          project=`echo ${{ github.repository }} | cut -d'/' -f2`
+          branch="${{ github.ref_name }}"
+          reports_dir="reports/$project_$branch"
+          if [ -e "$reports_dir" ]; then
+            mkdir -p "$reports_dir"
+          fi
+          set +e
+          python -m coverage run --source=. -m pytest --junitxml="$reports_dir/junit.xml" --html="$reports_dir/tests.html"
+          status=$?
+          set -e
+          python -m coverage html -d "$reports_dir/coverage"
+          python -m coverage xml -o "$reports_dir/coverage.xml"
+          genbadge tests -i "$reports_dir/junit.xml" -o "$reports_dir/tests.svg"
+          genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
+          rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
+          git -C "$reports_dir" add -A -f "$reports_dir"
+          git commit -m "CI reports for ${{ ? }} branch ${{ steps.branch.outputs.branch }}"
+          git push
+          exit $status
