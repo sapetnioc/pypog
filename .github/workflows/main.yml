@@ -71,7 +71,7 @@ jobs:
           set -x
           project=`echo ${{ github.repository }} | cut -d'/' -f2`
           branch="${{ github.ref_name }}"
-          reports_dir="reports/$project_$branch"
+          reports_dir="reports/${project},${branch}"
           if [ -e "$reports_dir" ]; then
             mkdir -p "$reports_dir"
           fi
