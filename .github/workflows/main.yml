@@ -25,8 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout projetc
-        uses: actions/setup-python@v4.5.0
+      - name: Checkout project
+        uses: actions/checkout
       
       - name: "Update branch name in README.md"
         run: |
