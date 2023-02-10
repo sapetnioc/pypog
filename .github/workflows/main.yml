@@ -84,7 +84,8 @@ jobs:
           genbadge tests -i "$reports_dir/junit.xml" -o "$reports_dir/tests.svg"
           genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
           rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
-          git -C "$reports_dir" config --unset-all http.https://github.com/.extraheader
+          git -C "$reports_dir" config -l | grep 'http\..*\.extraheader' | cut -d= -f1 | xargs -L1 git git -C "$reports_dir" config --unset-all
+          # git -C "$reports_dir" config --unset-all http.https://github.com/.extraheader
           git -C "$reports_dir" config user.name github-actions
           git -C "$reports_dir" config user.email github-actions@github.com
           git -C "$reports_dir" add -A -f .
