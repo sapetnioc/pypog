@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+pypog/__init__.py
+pypog.egg-info/PKG-INFO
+pypog.egg-info/SOURCES.txt
+pypog.egg-info/dependency_links.txt
+pypog.egg-info/requires.txt
+pypog.egg-info/top_level.txt

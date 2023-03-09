@@ -1,0 +1,4 @@
+{
+  "tests/pypog_test.py": true,
+  "tests/run_postgres_test.py": true
+}
