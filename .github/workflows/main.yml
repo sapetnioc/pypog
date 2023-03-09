@@ -78,6 +78,7 @@ jobs:
       - name: Install project
         run: |
           pip install -U pip
+          ls -a
           pip install .
 
 
