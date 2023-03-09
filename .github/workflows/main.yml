@@ -3,22 +3,22 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
 
-  dump_contexts_to_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        id: github_context_step
-        run: echo '${{ toJSON(github) }}'
-      - name: Dump job context
-        run: echo '${{ toJSON(job) }}'
-      - name: Dump steps context
-        run: echo '${{ toJSON(steps) }}'
-      - name: Dump runner context
-        run: echo '${{ toJSON(runner) }}'
-      - name: Dump strategy context
-        run: echo '${{ toJSON(strategy) }}'
-      - name: Dump matrix context
-        run: echo '${{ toJSON(matrix) }}'
+  # dump_contexts_to_log:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Dump GitHub context
+  #       id: github_context_step
+  #       run: echo '${{ toJSON(github) }}'
+  #     - name: Dump job context
+  #       run: echo '${{ toJSON(job) }}'
+  #     - name: Dump steps context
+  #       run: echo '${{ toJSON(steps) }}'
+  #     - name: Dump runner context
+  #       run: echo '${{ toJSON(runner) }}'
+  #     - name: Dump strategy context
+  #       run: echo '${{ toJSON(strategy) }}'
+  #     - name: Dump matrix context
+  #       run: echo '${{ toJSON(matrix) }}'
 
 
   tests_and_reports:
@@ -27,15 +27,36 @@ jobs:
 
       - name: Checkout project
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: "Update branch name in README.md"
         run: |
           sed -r 's:/public_reports/([^/]*),([^,/]+)/:/public_reports/\1,${{ github.ref_name }}/:g' -i README.md
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
           git add -u
           git commit -m "Automatic update of branch name in README.md links" || true
           git push
+
+      - name: "Ensure reports branch exists"
+        run: |
+          if [ ! `git rev-parse --verify "origin/reports" 2>/dev/null` ]
+          then
+            git checkout --orphan reports
+            rm -Rf *
+            echo '# Tests and coverage reports' > README.md
+            git add README.md
+            git commit -m 'Create reports branch'
+            git push --set-upstream origin reports
+            git checkout "${{ github.ref_name }}"
+          fi
+
+      - name: Get reports branch
+        uses: actions/checkout@v3
+        with:
+          ref: reports
+          path: reports
 
       - name: Setup Python
         uses: actions/setup-python@v4.5.0
@@ -59,11 +80,25 @@ jobs:
           pip install -U pip
           pip install .
 
-      - name: Get public_reports repository
-        uses: actions/checkout@v3
-        with:
-          repository: sapetnioc/public_reports
-          path: reports
+
+
+      - name: Run tests and generate reports
+        run: |
+          set +e
+          python -m coverage run --source=. -m pytest --junitxml=reports/junit.xml --html=reports/tests.html
+          status=$?
+          set -e
+          python -m coverage html -d reports/coverage
+          python -m coverage xml -o reports/coverage.xml
+          genbadge tests -i reports/junit.xml -o reports/tests.svg
+          genbadge coverage -i reports/coverage.xml -o reports/coverage.svg
+          rm reports/coverage.xml reports/junit.xml .coverage
+          git add -A -f .
+          git commit -m "Automatic tests reports generation"
+          git push
+          exit $status
+
+
 
       - name: Run tests and generate reports
         if: steps.branch.outputs.reports != 'true'
@@ -84,10 +119,6 @@ jobs:
           genbadge tests -i "$reports_dir/junit.xml" -o "$reports_dir/tests.svg"
           genbadge coverage -i "$reports_dir/coverage.xml" -o "$reports_dir/coverage.svg"
           rm "$reports_dir/coverage.xml" "$reports_dir/junit.xml"
-          git -C "$reports_dir" config -l | grep 'http\..*\.extraheader' | cut -d= -f1 | xargs -L1 git git -C "$reports_dir" config --unset-all
-          # git -C "$reports_dir" config --unset-all http.https://github.com/.extraheader
-          git -C "$reports_dir" config user.name github-actions
-          git -C "$reports_dir" config user.email github-actions@github.com
           git -C "$reports_dir" add -A -f .
           git -C "$reports_dir" commit -m "CI reports for $project ($branch)"
           git -C "$reports_dir" push
