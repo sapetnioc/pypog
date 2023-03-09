@@ -21,8 +21,6 @@ dependencies = [
   "psycopg>=3.1",
 ]
 
-[options]
-packages = ["pypog"]
-
 [tool.setuptools]
+packages = ["pypog" ]
 include-package-data = true
