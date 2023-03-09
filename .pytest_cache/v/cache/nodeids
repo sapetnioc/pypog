@@ -1,4 +1,6 @@
 [
   "reports/tests/pypog_test.py::test_pypog",
-  "reports/tests/run_postgres_test.py::test_run_postgres"
+  "reports/tests/run_postgres_test.py::test_run_postgres",
+  "tests/pypog_test.py::test_pypog",
+  "tests/run_postgres_test.py::test_run_postgres"
 ]
