@@ -17,10 +17,12 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-packages = ['pypog']
 dependencies = [
   "psycopg>=3.1",
 ]
+
+[options]
+packages = ["pypog"]
 
 [tool.setuptools]
 include-package-data = true
